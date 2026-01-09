@@ -121,5 +121,6 @@ src/
 - MySQL
 - Redis
 - AI集成（qwen3）
-## 前端代码
-- 链接：https://github.com/wysaly/MedicalModel.git
+## 其他代码
+- python：https://github.com/zuimeng1071/MedicalDiagnosisPython.git
+- 前端：https://github.com/wysaly/MedicalModel.git
