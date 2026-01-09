@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.medical_diagnosis.mapper.DetectionRecordMapper">
+
+    <insert id="insertDetail" useGeneratedKeys="true" keyProperty="detectionRecordId">
+        INSERT INTO detection_record_detail (
+            user_id,
+            memory_id,
+            description,
+            classify,
+            img_url,
+            merged_image_url,
+            binary_mask_url,
+            analysis_result,
+            create_time
+        ) VALUES (
+                     #{userId},
+                     #{memoryId},
+                     #{description},
+                     #{classify},
+                     #{imgUrl},
+                     #{mergedImageUrl},
+                     #{binaryMaskUrl},
+                     #{analysisResult},
+                     #{createTime}
+                 )
+    </insert>
+
+    <!-- 插入检测记录摘要 -->
+    <insert id="insertSummary" useGeneratedKeys="true" keyProperty="detectionRecordId">
+        INSERT INTO detection_record_summary (
+            detection_record_id,
+            user_id,
+            classify,
+            diagnosis,
+            create_time
+        ) VALUES (
+                     #{detectionRecordId},
+                     #{userId},
+                     #{classify},
+                     #{diagnosis},
+                     #{createTime}
+                 )
+    </insert>
+
+    <!-- 查询用户的所有检测记录摘要（按时间倒序） -->
+    <select id="query" resultType="com.ai.medical_diagnosis.domain.po.DetectionRecordSummary">
+        SELECT
+        detection_record_id,
+        user_id,
+        classify,
+        diagnosis,
+        create_time
+        FROM detection_record_summary
+        <where>
+            AND user_id = #{userId}
+            <if test="dto != null and dto.classify != null and dto.classify != ''">
+                AND classify = #{dto.classify}
+            </if>
+
+            <if test="dto != null and dto.diagnosis != null and dto.diagnosis != ''">
+                AND diagnosis LIKE CONCAT('%', #{dto.diagnosis}, '%')
+            </if>
+            <if test="dto != null and dto.startTime != null">
+                AND create_time >= #{dto.startTime}
+            </if>
+            <if test="dto != null and dto.endTime != null">
+                AND create_time <![CDATA[<=]]> #{dto.endTime}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    <select id="classifyStatistics"
+            resultType="com.ai.medical_diagnosis.domain.vo.ClassifyStatisticsVo">
+        SELECT
+        classify,
+        COUNT(*) AS count
+        FROM detection_record_summary
+        <where>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time <![CDATA[<=]]> #{endTime}
+            </if>
+        </where>
+        GROUP BY classify
+    </select>
+    <select id="diagnosisStatistics"
+            resultType="Integer">
+        SELECT
+        COUNT(*) AS count
+        FROM detection_record_summary
+        <where>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time <![CDATA[<=]]> #{endTime}
+            </if>
+        </where>
+    </select>
+
+</mapper>

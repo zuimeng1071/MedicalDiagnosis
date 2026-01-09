@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.medical_diagnosis.mapper.AdminMapper">
+
+    <!-- 插入管理员 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO admin_user (
+            username,
+            password,
+            email,
+            phone,
+            avatar_url,
+            create_time
+        ) VALUES (
+                     #{username},
+                     #{password},
+                     #{email},
+                     #{phone},
+                     #{avatarUrl},
+                     #{createTime}
+                 )
+    </insert>
+
+    <!-- 更新管理员信息（仅更新非空字段） -->
+    <update id="update">
+        UPDATE admin_user
+        <set>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="avatarUrl != null and avatarUrl != ''">avatar_url = #{avatarUrl},</if>
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM admin_user
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 根据用户名查询管理员（用于登录） -->
+    <select id="selectByUsername" resultType="com.ai.medical_diagnosis.domain.po.AdminUser">
+        SELECT
+            user_id,
+            username,
+            password,
+            email,
+            phone,
+            avatar_url,
+            create_time
+        FROM admin_user
+        WHERE username = #{username}
+    </select>
+
+    <!-- 根据管理员ID查询 -->
+    <select id="selectById" resultType="com.ai.medical_diagnosis.domain.po.AdminUser">
+        SELECT
+            user_id,
+            username,
+            password,
+            email,
+            phone,
+            avatar_url,
+            create_time
+        FROM admin_user
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>

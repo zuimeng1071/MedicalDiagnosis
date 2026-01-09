@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.medical_diagnosis.mapper.AiChatMapper">
+
+    <!-- 插入聊天记录 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="chatRecodeId">
+        INSERT INTO chat_recode (
+            user_id,
+            memory_id,
+            first_question,
+            create_time,
+            expiration_time
+        ) VALUES (
+                     #{userId},
+                     #{memoryId},
+                     #{firstQuestion},
+                     #{createTime},
+                     #{expirationTime}
+                 )
+    </insert>
+    <select id="chatStatistics" resultType="Integer">
+        SELECT COUNT(*) AS count
+        FROM chat_recode
+        <where>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time <![CDATA[<=]]> #{endTime}
+            </if>
+        </where>
+    </select>
+
+</mapper>

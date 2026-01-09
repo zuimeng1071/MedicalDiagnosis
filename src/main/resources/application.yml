@@ -1,0 +1,74 @@
+spring:
+  profiles:
+    active: dev
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 1
+          time-between-eviction-runs: 10s
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${mds.dev.datasource.host}:${mds.dev.datasource.port}/${mds.dev.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${mds.dev.datasource.username}
+    password: ${mds.dev.datasource.password}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 30MB
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      read-timeout: 60000
+    vectorstore:
+      redis:
+        initialize-schema: true   # 是否在应用启动时自动创建 Redis 向量索引及其 Schema（结构）
+        index-name: custom-index  # 指定 Redis 中用于向量相似性搜索的 索引名称（Index Name）
+        prefix: custom-prefix     # Redis 中用于存储向量的键值对的前缀
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+server:
+  port: 8080
+
+mds:
+  alioss:
+    access-key-id: ${mds.dev.alioss.access-key-id}
+    access-key-secret: ${mds.dev.alioss.access-key-secret}
+    bucket-name: zuimeng1071
+    endpoint: oss-cn-shenzhen.aliyuncs.com
+  chat-model:
+    base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    api-key: ${AI_DASHSCOPE_API_KEY}
+    log-requests: true
+    log-responses: true
+    completions-path: /api/v1/services/aigc/multimodal-generation/generation
+
+ai:
+  redis:
+    host: ${spring.data.redis.host}
+    port: ${spring.data.redis.port}
+
+
+#logging:
+#  level:
+#    # 设置整个 mapper 包的日志级别为 DEBUG
+#    com.detection.melanoma_detection_system.mapper: debug
+#
+#    # （可选）开启 MyBatis 核心日志
+#    org.mybatis: debug
+#    org.springframework.jdbc: debug
+#logging:
+#  level:
+#    org.springframework.web.client: DEBUG
+#    reactor.netty.http.client: DEBUG
+

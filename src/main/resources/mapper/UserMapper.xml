@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.medical_diagnosis.mapper.UserMapper">
+
+
+    <insert id="insert">
+        insert into user(username,password,email,phone,avatar_url,create_time)
+        values(#{username},#{password},#{email},#{phone},#{avatarUrl},#{createTime})
+    </insert>
+    <update id="update">
+        update user
+        <set>
+            <if test="username != null">username=#{username},</if>
+            <if test="email != null">email= #{email},</if>
+            <if test="phone != null">phone= #{phone},</if>
+            <if test="avatarUrl != null">avatar_url= #{avatarUrl},</if>
+        </set>
+        where user_id=#{userId}
+    </update>
+
+    <select id="queryUser" resultType="com.ai.medical_diagnosis.domain.vo.UseInfoVo">
+        select * from user
+        <where>
+            <if test="username != null">
+                AND username like concat('%',#{username},'%')
+            </if>
+            <if test="email != null">
+                AND email like concat('%',#{email},'%')
+            </if>
+            <if test="phone != null">
+                AND phone like concat('%',#{phone},'%')
+            </if>
+        </where>
+
+        ORDER BY create_time DESC
+    </select>
+</mapper>
