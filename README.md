@@ -121,3 +121,5 @@ src/
 - MySQL
 - Redis
 - AI集成（qwen3）
+## 前端代码
+- 链接：https://github.com/wysaly/MedicalModel.git
